@@ -19,27 +19,27 @@ class App extends React.Component {
     this.state = {
       latitude: '37.78825',
       longitude: '-122.4324',
+      streetName: ''
     };
   }
   componentDidMount() {
     this.onMapReady();
-    this.getLocation()
   }
 
   async getLocation() {
-    const {latitude, longitude} = this.state;
+    const {latitude, longitude, streetName} = this.state;
 
-    const response = await fetch(
-      `https://api.tomtom.com/routing/1/calculateRoute/${latitude,longitude}/json?avoid=unpavedRoads&key=tfOF9G1mlrgw9A9mYaRdlOK5MhVXjbrW`,
-    );
-    console.warn(response);
+     const response = await fetch(
+       `https://api.tomtom.com/routing/1/calculateRoute/${latitude},${longitude}:${latitude},${longitude}/json?&key=tfOF9G1mlrgw9A9mYaRdlOK5MhVXjbrW`,
+     )
+     console.log(response);
   }
   onMapReady = () => {
     Geolocation.getCurrentPosition(position => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      this.setState({latitude, longitude});
+      this.setState({latitude, longitude}, () => this.getLocation());
     });
   };
 
@@ -55,6 +55,7 @@ class App extends React.Component {
               position: 'absolute',
               backgroundColor: 'red',
               zIndex: 1,
+              elevation: 4
             }}
             placeholder="Where to"
           />
